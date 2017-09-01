@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     snapshots = robots(args.host)
     print('Found {} unique results'.format(len(snapshots)))
-    if len(snapshots) == 0:
+    if not snapshots:
         sys.exit()
     print('This may take some time...')
     pool = Pool(4)

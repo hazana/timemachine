@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-import requests
-import re
 import sys
+import re
+import argparse
+import requests
 from multiprocessing.dummy import Pool
 
 
@@ -26,13 +27,11 @@ def getpaths(snapshot):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('Usage:\n\tpython3 waybackrobots.py <domain-name>')
-        sys.exit()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("host", help="host to scan")
+    args = parser.parse_args()
 
-    host = sys.argv[1]
-
-    snapshots = robots(host)
+    snapshots = robots(args.host)
     print('Found %s unique results' % len(snapshots))
     if len(snapshots) == 0:
         sys.exit()
@@ -42,7 +41,7 @@ if __name__ == '__main__':
     unique_paths = set()
     for i in paths:
         unique_paths.update(i)
-    filename = '%s-robots.txt' % host
+    filename = '%s-robots.txt' % args.host
     with open(filename, 'w') as f:
         f.write('\n'.join(unique_paths))
     print('[*] Saved results to %s' % filename)

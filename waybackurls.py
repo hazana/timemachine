@@ -25,9 +25,9 @@ if __name__ == '__main__':
     urls = waybackurls(args.host, args.with_subs)
     json_urls = json.dumps(urls)
     if urls:
-        filename = '%s-waybackurls.json' % args.host
+        filename = '{}-waybackurls.json'.format(args.host)
         with open(filename, 'w') as f:
             f.write(json_urls)
-        print('[*] Saved results to %s' % filename)
+        print('[*] Saved results to {}'.format(filename))
     else:
         print('[-] Found nothing')

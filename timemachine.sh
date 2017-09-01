@@ -1,10 +1,10 @@
 #!/bin/bash
 
-python3 waybackurls.py $1 
-python3 waybackrobots.py $1
+python3 waybackurls.py "$1"
+python3 waybackrobots.py "$1"
 
 #Robots
-result_robots=$(cat $1-robots.txt)
+result_robots=$(cat "$1"-robots.txt)
 
 #URL Redirects
 result_url_redirect1=$(python -mjson.tool $1-waybackurls.json | grep -i -m10 'login')

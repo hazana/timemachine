@@ -20,7 +20,6 @@ if __name__ == '__main__':
     parser.add_argument("host", help="host to scan")
     parser.add_argument("--with-subs", help="scan url's subdomains also", action="store_true")
     args = parser.parse_args()
-    print(args)
 
     urls = waybackurls(args.host, args.with_subs)
     json_urls = json.dumps(urls)

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-import requests
 import sys
 import json
+import argparse
+import requests
 
 
 def waybackurls(host, with_subs):
@@ -15,20 +16,16 @@ def waybackurls(host, with_subs):
 
 
 if __name__ == '__main__':
-    argc = len(sys.argv)
-    if argc < 2:
-        print('Usage:\n\tpython3 waybackurls.py <url> <include_subdomains:optional>')
-        sys.exit()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("host", help="host to scan")
+    parser.add_argument("--with-subs", help="scan url's subdomains also", action="store_true")
+    args = parser.parse_args()
+    print(args)
 
-    host = sys.argv[1]
-    with_subs = False
-    if argc > 3:
-        with_subs = True
-
-    urls = waybackurls(host, with_subs)
+    urls = waybackurls(args.host, args.with_subs)
     json_urls = json.dumps(urls)
     if urls:
-        filename = '%s-waybackurls.json' % host
+        filename = '%s-waybackurls.json' % args.host
         with open(filename, 'w') as f:
             f.write(json_urls)
         print('[*] Saved results to %s' % filename)

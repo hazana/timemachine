@@ -6,10 +6,7 @@ import requests
 
 
 def waybackurls(host, with_subs):
-    if with_subs:
-        url = 'http://web.archive.org/cdx/search/cdx?url=*.%s/*&output=json&fl=original&collapse=urlkey' % host
-    else:
-        url = 'http://web.archive.org/cdx/search/cdx?url=%s/*&output=json&fl=original&collapse=urlkey' % host
+    url = 'http://web.archive.org/cdx/search/cdx?url={glob}{host}/*&output=json&fl=original&collapse=urlkey'.format(glob='*.' if with_subs else '', host=host)
     r = requests.get(url)
     results = r.json()
     return results[1:]

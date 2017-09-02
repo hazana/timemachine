@@ -70,7 +70,7 @@ if __name__ == '__main__':
     snapshots = robots(args.host)
     print('Found {} unique results'.format(len(snapshots)))
     if not snapshots:
-        sys.exit()
+        sys.exit(1)
     print('This may take some time...')
     pool = Pool(4)
     paths = pool.map(getpaths, snapshots)

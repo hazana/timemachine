@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python3 waybackrobots.py "$1"
+python3 wayback.py "$1"
 
 robots=$(cat "$1"-robots.txt)
 url_redirects='login|register|upload|logout|redirect|redir|url='

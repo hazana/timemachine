@@ -6,6 +6,14 @@ import argparse
 import requests
 from multiprocessing.dummy import Pool
 
+patterns = { 'url_redirects':'login|register|upload|logout|redirect|redir|url=',
+            'file_extensions':'.php|.asp|.aspx|.jsp|.jspa|.swf|.txt',
+            'local_file_inclusion':'file=|location=|locale=|path=|display=|read=|load=|retreive=|include=|require=',
+            'remote_file_inclusion':'folder=|path=|style=|template=|php_path=|doc=|pg=|pdf=|root=',
+            'sql':'?=|id=|php?=',
+            'xss':'contact|keyword=|search=',
+            'interesting':'admin|api|dump|template|xml|logs|data|install|index.php|source|index.php|template|dev',
+            }
 
 def robots(host):
     r = requests.get(
@@ -16,7 +24,6 @@ def robots(host):
         return []
     results.pop(0)  # The first item is ['timestamp', 'original']
     return results
-
 
 def getpaths(snapshot):
     url = 'https://web.archive.org/web/{0}/{1}'.format(*snapshot)

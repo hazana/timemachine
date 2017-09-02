@@ -6,13 +6,13 @@ import argparse
 import requests
 from multiprocessing.dummy import Pool
 
-patterns = { 'url_redirects':'login|register|upload|logout|redirect|redir|url=',
-            'file_extensions':'.php|.asp|.aspx|.jsp|.jspa|.swf|.txt',
-            'local_file_inclusion':'file=|location=|locale=|path=|display=|read=|load=|retreive=|include=|require=',
-            'remote_file_inclusion':'folder=|path=|style=|template=|php_path=|doc=|pg=|pdf=|root=',
-            'sql':'?=|id=|php?=',
-            'xss':'contact|keyword=|search=',
-            'interesting':'admin|api|dump|template|xml|logs|data|install|index.php|source|index.php|template|dev',
+patterns = { 'url_redirects':["login", "register", "upload", "logout", "redirect", "redir", "url="],
+            'file_extensions':[".php", ".asp", ".aspx", ".jsp", ".jspa", ".swf", ".txt"],
+            'local_file_inclusion':["file=", "location=", "locale=", "path=", "display=", "read=", "load=", "retreive=", "include=", "require="],
+            'remote_file_inclusion':["folder=", "path=", "style=", "template=", "php_path=", "doc=", "pg=", "pdf=", "root="],
+            'sql':["?=", "id=", "php?="],
+            'xss':["contact", "keyword=", "search="],
+            'interesting':["admin", "api", "dump", "template", "xml", "logs", "data", "install", "index.php", "source", "index.php", "template", "dev"],
             }
 
 def robots(host):
@@ -51,12 +51,18 @@ if __name__ == '__main__':
 
     # urls
     urls = waybackurls(args.host, args.with_subs)
-    json_urls = json.dumps(urls)
     if urls:
-        filename = '{}-waybackurls.json'.format(args.host)
-        with open(filename, 'w') as f:
-            f.write(json_urls)
-        print('[*] Saved results to {}'.format(filename))
+        for url in urls:
+            for name, pattern in patterns.items():
+                if pattern in url:
+                    results[name] = url
+        print('[*] Found {} URLs'.format(len(urls)))
+        if args.write_results:
+            json_urls = json.dumps(urls)
+            filename = '{}-waybackurls.json'.format(args.host)
+            with open(filename, 'w') as f:
+                f.write(json_urls)
+            print('[*] Saved results to {}'.format(filename))
     else:
         print('[-] Found nothing')
 

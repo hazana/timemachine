@@ -45,6 +45,7 @@ if __name__ == '__main__':
     parser.add_argument("host", help="host to scan")
     parser.add_argument("--with-subs", help="scan url's subdomains also", action="store_true")
     parser.add_argument("--write-results", help="write out results to text files", action="store_true")
+    parser.add_argument("--no-robots", help="don't do the long robots.txt scan", action="store_true")
     args = parser.parse_args()
 
     results = dict()
@@ -67,23 +68,24 @@ if __name__ == '__main__':
         print('[-] Found nothing')
 
     # robots
-    snapshots = robots(args.host)
-    print('Found {} unique results'.format(len(snapshots)))
-    if not snapshots:
-        sys.exit(1)
-    print('This may take some time...')
-    pool = Pool(4)
-    paths = pool.map(getpaths, snapshots)
-    unique_paths = set()
-    for i in paths:
-        unique_paths.update(i)
+    if not args.no_robots:
+        snapshots = robots(args.host)
+        print('Found {} unique results'.format(len(snapshots)))
+        if not snapshots:
+            sys.exit(1)
+        print('This may take some time...')
+        pool = Pool(4)
+        paths = pool.map(getpaths, snapshots)
+        unique_paths = set()
+        for i in paths:
+            unique_paths.update(i)
 
-    results["robots"] = unique_paths
-    if args.write_results:
-        filename = '{}-robots.txt'.format(args.host)
-        with open(filename, 'w') as f:
-            f.write('\n'.join(unique_paths))
-        print('[*] Saved results to {}'.format(filename))
+        results["robots"] = unique_paths
+        if args.write_results:
+            filename = '{}-robots.txt'.format(args.host)
+            with open(filename, 'w') as f:
+                f.write('\n'.join(unique_paths))
+            print('[*] Saved results to {}'.format(filename))
 
     print('Created by Hazana')
     for k, v in results.items():

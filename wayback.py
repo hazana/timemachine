@@ -39,12 +39,17 @@ def waybackurls(host, with_subs):
     results = r.json()
     return results[1:]
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("host", help="host to scan")
     parser.add_argument("--with-subs", help="scan url's subdomains also", action="store_true")
+    parser.add_argument("--write-results", help="write out results to text files", action="store_true")
     args = parser.parse_args()
 
+    results = dict()
+
+    # urls
     urls = waybackurls(args.host, args.with_subs)
     json_urls = json.dumps(urls)
     if urls:
@@ -55,6 +60,7 @@ if __name__ == '__main__':
     else:
         print('[-] Found nothing')
 
+    # robots
     snapshots = robots(args.host)
     print('Found {} unique results'.format(len(snapshots)))
     if not snapshots:
@@ -65,7 +71,17 @@ if __name__ == '__main__':
     unique_paths = set()
     for i in paths:
         unique_paths.update(i)
-    filename = '{}-robots.txt'.format(args.host)
-    with open(filename, 'w') as f:
-        f.write('\n'.join(unique_paths))
-    print('[*] Saved results to {}'.format(filename))
+
+    results["robots"] = unique_paths
+    if args.write_results:
+        filename = '{}-robots.txt'.format(args.host)
+        with open(filename, 'w') as f:
+            f.write('\n'.join(unique_paths))
+        print('[*] Saved results to {}'.format(filename))
+
+    print('Created by Hazana')
+    for k, v in results.items():
+        print(k)
+        print('---------------------------------------------')
+        print(v)
+        print('---------------------------------------------', end='\n\n')
